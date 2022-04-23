@@ -2,8 +2,6 @@ from PIL import Image, ImageDraw, ImageTk
 import tkinter as tk
 from random import randint
 
-from matplotlib.pyplot import getp
-
 #Coord system:
 # (0,3) (1,3) (2,3) (3,3)
 # (0,2) (1,2) (2,2) (3,2)
@@ -21,9 +19,10 @@ if __name__ == "__main__":
 	outputYScale = 512
 
 	#Contains RGB values for valid colours
-	#0,100,0 - Green
-	#0,0,100 - Blue
-	colours = [(0,100,0), (0,0,100)]
+	BLUE = (0, 0, 100)
+	GREEN = (0, 100, 0)
+	NONE = (0, 0, 0)
+	COLOURS = [GREEN, BLUE]
 
 	#Defines cardinal directions
 	UP = (0, 1)
@@ -31,8 +30,20 @@ if __name__ == "__main__":
 	LEFT = (-1, 0)
 	RIGHT = (1, 0)
 
+	#Defines rules
+	#Index 0: UP
+	#Index 1: LEFT
+	#Index 2: DOWN
+	#Index 3: RIGHT
+	RULES = {BLUE: ((BLUE, GREEN), (BLUE),  (BLUE), (BLUE, GREEN)),
+			 GREEN: ((GREEN), (GREEN, BLUE), (GREEN, BLUE), (GREEN))}
+
+	#Stores final colour and possible colours
+	finalColour = [NONE for x in range(outputXScale * outputYScale)]
+	possibleColours = [(GREEN, BLUE) for x in range(outputXScale * outputYScale)]
+
 	#Defines random colour for each coord
-	coords = [randint(0, len(colours) - 1) for x in range(outputXScale*outputYScale)]
+	coords = [randint(0, len(COLOURS) - 1) for x in range(outputXScale * outputYScale)]
 
 	#Sets up tkinter
 	root = tk.Tk()
@@ -45,7 +56,7 @@ if __name__ == "__main__":
 	#Currently just adds random colours to all squares
 	for x in range(int(outputXScale / 2)):
 		for y in range(int(outputYScale / 2)):
-			draw.rectangle([4*x,4*y,4*(x+1),4*(y+1)], fill = colours[coords[getPixelID(x,y)]])
+			draw.rectangle([4*x,4*y,4*(x+1),4*(y+1)], fill = COLOURS[coords[getPixelID(x,y)]])
 
 	#Displays the image
 	image = ImageTk.PhotoImage(img)
