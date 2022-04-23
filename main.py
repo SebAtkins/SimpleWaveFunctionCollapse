@@ -8,10 +8,37 @@ from random import randint
 # (0,1) (1,1) (2,1) (3,1)
 # (0,0) (1,0) (2,0) (3,0)
 
+#Function to get ID of a given pixel
 def getPixelID(x, y):
 	global outputXScale
 
 	return int(x + outputXScale / 2 * y)
+
+#Function to get pixel from given ID
+def getPixelFromID(id):
+	global outputXScale
+
+	y = int(id // (outputXScale / 2))
+	x = int(id % (outputXScale / 2))
+
+	return x, y
+
+#Function to find a random pixel ID with the lowest entropy
+def getLowestEntropy(possibleColours):
+	#List to store lowest entropy elements for random selection
+	shortest = []
+
+	#Gets the length of the shortest list
+	shortestLength = len(min(possibleColours, key=len))
+
+	#Find all elements with the lowest entropy
+	for x in range(len(possibleColours)):
+		if len(possibleColours[x]) == shortestLength:
+			shortest.append(x)
+	
+	#Return random element from shortest
+	return shortest[randint(0, len(shortest) - 1)]
+
 
 if __name__ == "__main__":
 	#Defines scale of output image
