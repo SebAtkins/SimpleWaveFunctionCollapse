@@ -6,10 +6,12 @@ N = 3
 from PIL import Image, ImageDraw, ImageTk
 import tkinter as tk
 from random import randint, choice
+import math
 
 # Defines the colours
 # 1: Blue
 # 2: Green
+# 3: Red
 colours = {
     1: (0, 0, 100),
     2: (0, 100, 0),
@@ -37,6 +39,42 @@ def colourPixel(x, y, col):
     draw.rectangle([4*x, 4*y, 4*(x+1), 4*(y+1)], fill = colours[col])
 
     return True
+
+# Returns ID of pixel
+def pixelID(x, y):
+    global w, h
+
+    return x + w * y
+
+# Returns coordinates from ID
+def pixelCoord(id):
+    global w, h
+
+    return id % w, id // w
+
+# Select pixel with low entropy
+# Returns ID of said pixel
+def getLowestEntropy():
+    global wave
+
+    lowestEntropy = math.inf
+    lowest = []
+
+    for i in range(len(wave)):
+        entropy = wave[i]
+        if lowestEntropy > entropy > 1:
+            lowest.clear
+            lowest.append(i)
+        elif entropy == lowestEntropy:
+            lowest.append(i)
+    
+    return choice(lowest)
+
+# Make selection of colour of pixel
+def updatePixel(id):
+    global wave
+
+    
 
 if __name__ == "__main__":
     root = tk.Tk()
