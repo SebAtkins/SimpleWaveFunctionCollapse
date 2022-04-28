@@ -3,7 +3,6 @@ w, h = 50, 50
 N = 3
 
 # Imports
-from cmath import pi
 from PIL import Image, ImageDraw, ImageTk
 import tkinter as tk
 from random import randint, choice, choices
