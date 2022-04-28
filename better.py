@@ -1,5 +1,5 @@
 # Variables to edit
-w, h = 100, 100
+w, h = 50, 50
 N = 3
 
 # Imports
@@ -23,7 +23,7 @@ colours = {
 weights = {
     1: 120,
     2: 120,
-    3: 10,
+    3: 40,
     4: 110
 }
 
@@ -46,7 +46,7 @@ wave = [[1, 2, 3, 4] for x in range(w * h)]
 def colourPixel(x, y, col):
     global colours
 
-    draw.rectangle([4*x, 4*y, 4*(x+1), 4*(y+1)], fill = colours[col], width = 0)
+    draw.rectangle([4*x, 4*y, 4*(x+0.75), 4*(y+0.75)], fill = colours[col], width = 0)
 
     return True
 
@@ -209,7 +209,5 @@ if __name__ == "__main__":
         canvas.pack()
         root.update_idletasks()
         root.update()
-    
-    img.show()
 
     root.mainloop()
