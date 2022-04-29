@@ -10,7 +10,7 @@ def genSockets():
     """
     sockets = {}
 
-    for i in range(6):
+    for i in range(5):
         img = Image.open(f"tilemap/tilemap{i}.png")
 
         sockets[i] = [0, 0, 0, 0]

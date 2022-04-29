@@ -20,6 +20,6 @@ def getTextures():
     textures["31"] = [rotateSocketsAntiClockwise(defSockets[3]), Image.open("tilemap/tilemap3.png").rotate(90)]
 
     textures["40"] = [defSockets[4], Image.open("tilemap/tilemap4.png")]
-    textures["50"] = [defSockets[5], Image.open("tilemap/tilemap5.png")]
+    #textures["50"] = [defSockets[5], Image.open("tilemap/tilemap5.png")]
 
     return textures

@@ -70,50 +70,75 @@ class wave:
         coords = self.pixelCoord(id)
 
         # Update left pixel's entropy
-        leftPixel = self.pixelID((coords[0] - 1) % self.w, (coords[1]) % self.h)
-        if len(self.wave[leftPixel]) != 1:
-            for i in self.wave[leftPixel]:
-                if self.textures[i][0][3] != self.textures[self.wave[id][0]][0][2]:
-                    self.wave[leftPixel].remove(i)
-            if len(self.wave[leftPixel]) == 1:
-                self.updateEntropy(leftPixel)
+        if coords[0] != 0:
+            leftPixel = self.pixelID(coords[0] - 1, coords[1])
+            if len(self.wave[leftPixel]) != 1:
+                for i in self.wave[leftPixel]:
+                    if self.textures[i][0][2] != self.textures[self.wave[id][0]][0][3]:
+                        self.wave[leftPixel].remove(i)
+                if len(self.wave[leftPixel]) == 1:
+                    self.updateEntropy(leftPixel)
         
         # Update right pixel's entropy
-        rightPixel = self.pixelID((coords[0] + 1) % self.w, (coords[1]) % self.h)
-        if len(self.wave[rightPixel]) != 1:
-            for i in self.wave[rightPixel]:
-                if self.textures[i][0][2] != self.textures[self.wave[id][0]][0][3]:
-                    self.wave[rightPixel].remove(i)
-            if len(self.wave[rightPixel]) == 1:
-                self.updateEntropy(rightPixel)
+        if coords[0] != self.w - 1:
+            rightPixel = self.pixelID(coords[0] + 1, coords[1])
+            if len(self.wave[rightPixel]) != 1:
+                for i in self.wave[rightPixel]:
+                    if self.textures[i][0][3] != self.textures[self.wave[id][0]][0][2]:
+                        self.wave[rightPixel].remove(i)
+                if len(self.wave[rightPixel]) == 1:
+                    self.updateEntropy(rightPixel)
         
         # Update top pixel's entropy
-        topPixel = self.pixelID((coords[0]) % self.w, (coords[1] + 1) % self.h)
-        if len(self.wave[topPixel]) != 1:
-            for i in self.wave[topPixel]:
-                if self.textures[i][0][1] != self.textures[self.wave[id][0]][0][0]:
-                    self.wave[topPixel].remove(i)
-            if len(self.wave[topPixel]) == 1:
-                self.updateEntropy(topPixel)
+        if coords[1] != self.h - 1:
+            topPixel = self.pixelID(coords[0], coords[1] + 1)
+            if len(self.wave[topPixel]) != 1:
+                for i in self.wave[topPixel]:
+                    if self.textures[i][0][1] != self.textures[self.wave[id][0]][0][0]:
+                        self.wave[topPixel].remove(i)
+                if len(self.wave[topPixel]) == 1:
+                    self.updateEntropy(topPixel)
         
         # Update bottom pixel's entropy
-        bottomPixel = self.pixelID((coords[0]) % self.w, (coords[1] - 1) % self.h)
-        if len(self.wave[bottomPixel]) != 1:
-            for i in self.wave[bottomPixel]:
-                if self.textures[i][0][0] != self.textures[self.wave[id][0]][0][1]:
-                    self.wave[bottomPixel].remove(i)
-            if len(self.wave[bottomPixel]) == 1:
-                self.updateEntropy(bottomPixel)
+        if coords[1] != 0:
+            bottomPixel = self.pixelID((coords[0]) % self.w, (coords[1] - 1) % self.h)
+            if len(self.wave[bottomPixel]) != 1:
+                for i in self.wave[bottomPixel]:
+                    if self.textures[i][0][0] != self.textures[self.wave[id][0]][0][1]:
+                        self.wave[bottomPixel].remove(i)
+                if len(self.wave[bottomPixel]) == 1:
+                    self.updateEntropy(bottomPixel)
         
-        self.updatePixel(id)
+        if len(self.wave[id]) == 1:
+            self.updatePixel(id)
 
         return True
+    
+    def isCollapsed(self):
+        lowestEntropy = inf
+        lowest = []
+
+        for i in range(len(self.wave)):
+            entropy = len(self.wave[i])
+            if lowestEntropy > entropy > 1:
+                lowest.clear
+                lowest.append(i)
+                lowestEntropy = entropy
+            elif entropy == lowestEntropy:
+                lowest.append(i)
+        
+        if len(lowest) != 0:
+            return True
+        else:
+            return False
     
     # Updates the image to show the collapsed pixel
     def updatePixel(self, id: int):
         """Updates image to collapsed value, returns True"""
 
         coords = self.pixelCoord(id)
+
+        self.wave[id] = [choice(self.wave[id])]
 
         self.img.paste(self.textures[self.wave[id][0]][1], (coords[0] * 16, coords[1] * 16))
 
@@ -136,7 +161,9 @@ class wave:
         self.screen.update(self.img)
 
         # Main loop
-        while i:=self.getLowestEntropy():
+        while self.isCollapsed():
+            i = self.getLowestEntropy()
+            print(f"Entropy: {len(self.wave[i])}")
             self.updatePixel(i)
             self.updateEntropy(i)
             self.screen.update(self.img)
