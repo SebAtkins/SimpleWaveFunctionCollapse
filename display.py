@@ -3,6 +3,15 @@ from math import inf
 from random import choice
 
 class wave:
+    """
+    Class used for generation of images via wavefront collapse
+
+    Functions:
+    - generate()
+    - new = wave(width, height)    
+    """
+
+    # Constructor
     def __init__(self, w: int = 50, h: int = 50):
         """Takes w (width) and h (height)"""
         self.w = w
@@ -54,6 +63,47 @@ class wave:
         except:
             return False
 
+    # Updates entropy of surrounding pixels, wraps around
+    def updateEntropy(self, id: int):
+        """Update entropy of pixels, wraps around screen"""
+        coords = self.pixelCoord(id)
+
+        # Update left pixel's entropy
+        leftPixel = self.pixelID((coords[0] - 1) % self.w, (coords[1]) % self.h)
+        if len(self.wave[leftPixel]) != 1:
+            for i in self.wave[leftPixel]:
+                if self.textures[i][0][3] != self.textures[id][0][2]:
+                    self.wave[leftPixel].remove(i)
+        if len(self.wave[leftPixel]) == 1:
+            self.updateEntropy(leftPixel)
+        
+        # Update right pixel's entropy
+        rightPixel = self.pixelID((coords[0] + 1) % self.w, (coords[1]) % self.h)
+        if len(self.wave[rightPixel]) != 1:
+            for i in self.wave[rightPixel]:
+                if self.textures[i][0][2] != self.textures[id][0][3]:
+                    self.wave[rightPixel].remove(i)
+        if len(self.wave[rightPixel]) == 1:
+            self.updateEntropy(rightPixel)
+        
+        # Update top pixel's entropy
+        topPixel = self.pixelID((coords[0]) % self.w, (coords[1] + 1) % self.h)
+        if len(self.wave[topPixel]) != 1:
+            for i in self.wave[topPixel]:
+                if self.textures[i][0][1] != self.textures[id][0][0]:
+                    self.wave[topPixel].remove(i)
+        if len(self.wave[topPixel]) == 1:
+            self.updateEntropy(topPixel)
+        
+        # Update bottom pixel's entropy
+        bottomPixel = self.pixelID((coords[0]) % self.w, (coords[1] - 1) % self.h)
+        if len(self.wave[bottomPixel]) != 1:
+            for i in self.wave[bottomPixel]:
+                if self.textures[i][0][0] != self.textures[id][0][1]:
+                    self.wave[bottomPixel].remove(i)
+        if len(self.wave[bottomPixel]) == 1:
+            self.updateEntropy(bottomPixel)
+
     def generate(self):
         """Runs the generation, returns True"""
         # Generate textures and sockets
@@ -65,5 +115,5 @@ class wave:
         return True
 
 if __name__==("__main__"):
-    wave = wave(50, 50)
+    wave = wave()
     wave.generate()
